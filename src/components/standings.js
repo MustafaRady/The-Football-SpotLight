@@ -1,11 +1,27 @@
-import React, { useContext, useLayoutEffect, useState } from "react";
+import React, { useCallback, useContext, useLayoutEffect, useState } from "react";
 import axios from "axios";
 import { AppContext } from "../App";
 
  function Standings(){
+    console.log("in standings...")
     const{state} = useContext(AppContext)
     const [LeagueCode,setLeagueCode] = useState(2014)
     const [Teams,setTeams]= useState([]);
+
+    const getTeamsStandings = useCallback( async()=>{
+        try{
+            const response = await axios.get("https://api.football-data.org//v4/competitions/"+ LeagueCode+"/standings",
+            {
+                headers:{"X-Auth-Token":"a4b408a61fec4bb99db984a6c7b67a50"},
+                mode:'cors'
+            })
+            const array = response.data.standings[0].table ;
+            setTeams(array);
+        }catch(err){
+            console.log(err.message);
+        }
+    },[LeagueCode])
+
     useLayoutEffect(()=>{
         switch(true){
             case state.LaLIGA:
@@ -26,12 +42,10 @@ import { AppContext } from "../App";
             default:return;
 
         }
-    },[state])
+        getTeamsStandings() 
+    },[state,getTeamsStandings]) 
 
 
-    useLayoutEffect(()=>{
-        getTeamsStandings();
-    })
 // When using useState or useReducer, 
 //changing the state triggers a re-render of the component.
 //  However, React batching mechanism may update the state and 
@@ -46,18 +60,7 @@ import { AppContext } from "../App";
 
 
 
-    const getTeamsStandings = async()=>{
-        try{
-            const response = await axios.get("https://api.football-data.org//v4/competitions/"+ LeagueCode+"/standings",
-            {
-                headers:{"X-Auth-Token":"a4b408a61fec4bb99db984a6c7b67a50"}
-            })
-            const array = response.data.standings[0].table ;
-            setTeams(array);
-        }catch(err){
-            console.log(err.message);
-        }
-    }
+
 
 
     return(
