@@ -6,7 +6,6 @@ export default function Matches(){
     const [Matches,setMatches] = useState([]);
     const{state} = useContext(AppContext)
     const [LeagueCode,setLeagueCode] = useState(2014)
-    console.log({state})
     useLayoutEffect(()=>{
         switch(true){
             case state.LaLIGA:
@@ -47,7 +46,7 @@ export default function Matches(){
 
             for(var i = 0 ; i<(response.data.matches).length ; i++)
             {
-                if(day >= getDayMatch((response.data.matches[i])) && month == getMonthMacth((response.data.matches[i]))){ 
+                if(day >= getDayMatch((response.data.matches[i])) && month === getMonthMacth((response.data.matches[i]))){ 
                     matchDay = response.data.matches[i].matchday
                     break;
                 }
@@ -69,27 +68,6 @@ export default function Matches(){
     const getDayMatch= ()=>{
         var date = "2023-07-14";
         return date.substr(8,2)
-    }
-    function FillArray(){
-        const date = new Date();
-        var day = date.getDate();
-        var month = date.getMonth();
-        var matchDay = 0 ; 
-
-        
-        Matches.map((element,index)=>{
-            if(day >= getDayMatch(element.utcDate) && month== getMonthMacth(element.utcDate)) {
-                matchDay = element.matchday ;
-                
-            }
-        })
-
-        if(matchDay == 0 ){
-            matchDay = 1 ; 
-        }
-
-
-        
     }
     function getDate(elementDay){
         var date = elementDay.substr(0,elementDay.indexOf("T"));

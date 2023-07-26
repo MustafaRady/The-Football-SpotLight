@@ -6,7 +6,6 @@ import { AppContext } from "../App";
     const{state} = useContext(AppContext)
     const [LeagueCode,setLeagueCode] = useState(2014)
     const [Teams,setTeams]= useState([]);
-    console.log({state})
     useLayoutEffect(()=>{
         switch(true){
             case state.LaLIGA:
@@ -32,9 +31,6 @@ import { AppContext } from "../App";
     useLayoutEffect(()=>{
         getTeamsStandings();
     },[LeagueCode])
-
-    console.log("Standings rendered ...\n")
-    console.log(Teams)
 // When using useState or useReducer, 
 //changing the state triggers a re-render of the component.
 //  However, React batching mechanism may update the state and 
@@ -48,7 +44,6 @@ import { AppContext } from "../App";
 
 
 
-    const[isChanging , setChanging] = useState(false);
 
     const getTeamsStandings = async()=>{
         try{
@@ -63,11 +58,6 @@ import { AppContext } from "../App";
         }
     }
 
-    
-   
-    // setTimeout(()=>{
-    //     setChanging(!isChanging);
-    // },60000)
 
     return(
         <div className="container md:mx-auto w-full mx-3 my-10 ">
