@@ -23,14 +23,15 @@ export default function Matches(){
             case state.BUNDESLIGA:
                 setLeagueCode(2002);
                 break;
-
+            default:
+                return ; 
         }
     },[state])
 
 
     useLayoutEffect(()=>{
         getTeamsMatches();
-    },[LeagueCode])
+    })
     
     const getTeamsMatches=async()=>{
         try{
@@ -52,10 +53,10 @@ export default function Matches(){
                 }
                 
             }
-            if(matchDay == 0 ){
+            if(matchDay === 0 ){
                 matchDay = 1 ; 
             }
-            var new_array = (response.data.matches).filter((element)=>element.matchday == 1);
+            var new_array = (response.data.matches).filter((element)=>element.matchday === 1);
             setMatches(new_array);
             }catch(err){
                 console.log(err.message);
@@ -86,18 +87,18 @@ export default function Matches(){
                    return  <div key={index} className="container bg-white  flex flex-col rounded-lg my-3 px-3 h-40 justify-center">
                             <h1 className="text-center">{getDate(element.utcDate)}</h1>
                             <div className="flex md:flex-row flex-col justify-between items-center md:text-3xl text-sm ">
-                                <img src={element.homeTeam.crest} className="h-6 w-6" ></img>
+                                <img src={element.homeTeam.crest} className="h-6 w-6" alt="" ></img>
                                 <span className="text-lg">{element.homeTeam.shortName}</span>
                                 X
                                 <span className="text-lg">{element.awayTeam.shortName}</span>
-                                <img src={element.awayTeam.crest} className="h-6 w-6"></img>
+                                <img src={element.awayTeam.crest} className="h-6 w-6" alt=""></img>
                             </div>
                     </div>
                 })
                 
                 }
             </div>
-            {Matches.length==0 && 
+            {Matches.length===0 && 
                 <div className="text-center text-4xl font-bold">
                     Loading ...</div>
                 }

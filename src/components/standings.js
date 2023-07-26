@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useLayoutEffect, useState } from "react";
 import axios from "axios";
 import { AppContext } from "../App";
 
@@ -23,6 +23,7 @@ import { AppContext } from "../App";
             case state.BUNDESLIGA:
                 setLeagueCode(2002);
                 break;
+            default:return;
 
         }
     },[state])
@@ -30,7 +31,7 @@ import { AppContext } from "../App";
 
     useLayoutEffect(()=>{
         getTeamsStandings();
-    },[LeagueCode])
+    })
 // When using useState or useReducer, 
 //changing the state triggers a re-render of the component.
 //  However, React batching mechanism may update the state and 
@@ -75,7 +76,7 @@ import { AppContext } from "../App";
                     { Teams.map((element,index)=>{
                         return <tr key={index} className="text-center border-2 h-12 md:text-2xl text-sm font-bold hover:scale-y-150 hover:scale-100 hover:duration-300 hover:bg-blue-200">
                             <td>{element.position}</td>
-                            <td className="flex "><img className="md:mx-10 mx-2 h-10 w-10" src={element.team.crest} />{element.team.name}</td>
+                            <td className="flex "><img className="md:mx-10 mx-2 h-10 w-10" alt="" src={element.team.crest} />{element.team.name}</td>
                             <td>{element.won}</td>
                             <td>{element.lost}</td>
                             <td>{element.draw}</td>
@@ -84,7 +85,7 @@ import { AppContext } from "../App";
                     })}
             </table>
                 }
-            {Teams.length==0 && 
+            {Teams.length===0 && 
                 <div className="text-center text-4xl font-bold">
                     Loading ...</div>
                 }
