@@ -6,7 +6,7 @@ import { AppContext } from "../App";
     console.log("in standings...")
     const{state} = useContext(AppContext)
     const [LeagueCode,setLeagueCode] = useState(2014)
-    const [Teams,setTeams]= useState([]);
+    const [Teams,setTeams]= useState([])
 
     const getTeamsStandings = useCallback( async()=>{
         try{
@@ -16,7 +16,7 @@ import { AppContext } from "../App";
                 mode:'cors'
             })
             const array = response.data.standings[0].table ;
-            setTeams(array);
+            setTeams(array)
         }catch(err){
             console.log(err.message);
         }
@@ -35,16 +35,19 @@ import { AppContext } from "../App";
                 break;
             case state.SERIE_A:
                 setLeagueCode(2019);
-                break;
+                 break;
             case state.BUNDESLIGA:
                 setLeagueCode(2002);
                 break;
             default:return;
 
         }
-        getTeamsStandings() 
-    },[state,getTeamsStandings]) 
+        
+    },[state]) 
 
+    useLayoutEffect(()=>{
+        getTeamsStandings() ;
+    },[getTeamsStandings])
 
 // When using useState or useReducer, 
 //changing the state triggers a re-render of the component.
@@ -76,7 +79,7 @@ import { AppContext } from "../App";
                         <td>D</td>
                         <td>Pts</td>
                     </tr>
-                    { Teams.map((element,index)=>{
+                    {Teams.map((element,index)=>{
                         return <tr key={index} className="text-center border-2 h-12 md:text-2xl text-sm font-bold hover:scale-y-150 hover:scale-100 hover:duration-300 hover:bg-blue-200">
                             <td>{element.position}</td>
                             <td className="flex "><img className="md:mx-10 mx-2 h-10 w-10" alt="" src={element.team.crest} />{element.team.name}</td>
