@@ -5,10 +5,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Signika+Negative&display=swap');
 
 body {
-    background-image:url("../src/images/blue.jpg") ;
+    background-color: blue;
     background-repeat: no-repeat;
     background-size: cover;
-    background-position:100%;
   
   }
 
