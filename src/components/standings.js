@@ -67,7 +67,7 @@ import { AppContext } from "../App";
 
 
     return(
-        <div className="container md:mx-auto w-full mx-3 my-10 ">
+        <div className="container md:mx-auto w-full h-full mx-3 my-10 ">
             <h1 className="font-bold text-white  w-full md:text-4xl flex md:py-10 md:px-2 underline"> Standings </h1>
             {Teams.length>0 &&
             <table className="drop-shadow-2xl md:w-full bg-white box-shadow rounded-lg ">

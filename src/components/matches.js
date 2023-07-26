@@ -79,7 +79,7 @@ export default function Matches(){
     }
 
     return(
-        <div className="md:container md:mx-auto">
+        <div className="md:container h-full md:mx-auto">
             <h1 className="font-bold text-white  w-full md:text-4xl flex py-10 px-2 underline"> Matches </h1>
             <div className=" grid grid-cols-2 md:gap-x-5 gap-x-2 gap-y-2  ">
             {Matches.length>0 &&
