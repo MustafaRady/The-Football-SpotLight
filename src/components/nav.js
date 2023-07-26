@@ -25,7 +25,7 @@ function NavBar({dispatch}){
         <>
         <div className="h-20 bg-blue-900 flex items-center">
             <div className="container flex items-center">
-                <img src={TheFootballSpotLight}  className="pl-10 w-24"></img>
+                <img src={TheFootballSpotLight} alt=""  className="pl-10 w-24"></img>
                 <h1 className="text-l text-white font-bold ml-2 md:text-3xl">The FootballSpotlight</h1>
             </div>
             <nav className="lg:container lg:flex lg:justify-end lg:w-full lg:mr-5 hidden">
@@ -56,7 +56,7 @@ function NavBar({dispatch}){
                 </ul>
             </nav>
             <nav className="lg:hidden flex w-1/2 items-center justify-center" >
-                <img src={Main} className="h-10 w-10" onClick={()=>addMenu()}></img>
+                <img src={Main} className="h-10 w-10" alt="" onClick={()=>addMenu()}></img>
 
             </nav>
         </div>
