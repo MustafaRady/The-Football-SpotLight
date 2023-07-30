@@ -42,12 +42,12 @@ function NavBar({dispatch}){
                     <li className="md:font-bold md:text-3xl cursor  text-white text-l">
                         <div>
                             <h3 onClick={()=>{addSelection()}}>League</h3>
-                            <div id="selection" className="hidden flex flex-cols text-lg absolute overflow-visible">
+                            <div id="selection" className="hidden flex flex-cols bg-blue-700 text-lg absolute text-center overflow-visible">
                                 <ul >
                                     <li onClick={()=>dispatch({type:ACTIONS.LALIGA})}>La liga</li>
                                     <li onClick={()=>dispatch({type:ACTIONS.BUNDESLIGA})}>Bundesliga</li>
                                     <li onClick={()=>dispatch({type:ACTIONS.LIGUE_1})}>League 1</li>
-                                    <li onClick={()=>dispatch({type:ACTIONS.PREMIER_LEAGUE})}>Premiere League</li>
+                                    <li style={{fontSize:"0.9rem"}} onClick={()=>dispatch({type:ACTIONS.PREMIER_LEAGUE})}>Premiere League</li>
                                     <li onClick={()=>dispatch({type:ACTIONS.SERIE_A})}>Seria A</li>
                                 </ul>
                             </div>
@@ -71,11 +71,11 @@ function NavBar({dispatch}){
                     <li className="lg:font-bold lg:text-3xl  text-white text-l hover:scale-110">
                         <Link to="/news">News</Link>
                     </li>
-                    <li className="lg:font-bold lg:text-3xl cursor  text-white text-md">
+                    <li className="lg:font-bold cursor  text-white text-md">
                         <div>
                             <h3 onClick={()=>{addSelectionMenu()}}>League</h3>
-                            <div id="selection-Menu" className="hidden flex flex-cols absolute text-sm overflow-visible">
-                                <ul >
+                            <div id="selection-Menu" className="hidden flex bg-blue-700   flex-cols absolute text-sm overflow-visible">
+                                <ul className="">
                                     <li onClick={()=>dispatch({type:ACTIONS.LALIGA})}>La liga</li>
                                     <li onClick={()=>dispatch({type:ACTIONS.BUNDESLIGA})}>Bundesliga</li>
                                     <li onClick={()=>dispatch({type:ACTIONS.LIGUE_1})}>League 1</li>
