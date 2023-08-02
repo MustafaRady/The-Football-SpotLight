@@ -35,8 +35,6 @@ export default function Matches(){
     
     const getTeamsMatches=async()=>{
         try{
-            const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
-            
 
             const response = await axios.get("https://api.football-data.org/v4/competitions/"+LeagueCode+"/matches",
             {
