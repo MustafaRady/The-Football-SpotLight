@@ -1,76 +1,72 @@
 
 import axios from "axios";
-import { useState ,useContext,useLayoutEffect } from "react";
-import { AppContext } from "../App";
-export default function Matches(){
-    const [Matches,setMatches] = useState([]);
-    const{state} = useContext(AppContext)
-    const [LeagueCode,setLeagueCode] = useState(2014)
-    useLayoutEffect(()=>{
-        switch(true){
-            case state.LaLIGA:
-                setLeagueCode(2014);
-                break
-            case state.LIGUE_1:
-                setLeagueCode(2015);
-                break;
-            case state.PREMIER_LEAGUE:
-                setLeagueCode(2021);
-                break;
-            case state.SERIE_A:
-                setLeagueCode(2019);
-                break;
-            case state.BUNDESLIGA:
-                setLeagueCode(2002);
-                break;
-            default:
-                return ; 
-        }
-    },[state])
+import { useState,useLayoutEffect, useRef, useCallback } from "react";
 
+export default function Matches({code}){
+    const LeagueCode = code ;
+    const [Matches,setMatches] = useState([]);
+    const [response , setResponse] = useState(1); 
+    const [empty, setEmpty] = useState(false); 
+    const refSelectedDay = useRef(null);
+    const [selectedByFinished,setSelectedByFinished] = useState(null);
+
+
+   
+    
+    const getTeamsMatches= useCallback(
+        async()=>{
+            try{
+                
+                const response = await axios.get("https://api.football-data.org/v4/competitions/"+LeagueCode+"/matches",{
+                    headers:{"X-Auth-Token":"a4b408a61fec4bb99db984a6c7b67a50"}
+                })
+                setResponse(response);
+    
+                if(response === 1 ){
+                    console.log("Response is 1 "); 
+                    return ;
+                } 
+                const Array_Of_WEEK_Matches = [] ;
+                let matchDay = getMatchDay();
+    
+                (response.data.matches).forEach((element)=>{
+                    if(element.matchday === matchDay){
+                        Array_Of_WEEK_Matches.push(element);
+                    }
+                })
+    
+                if(Array_Of_WEEK_Matches.length === 0 ){
+                    setMatches([]);
+                    setEmpty(true);
+                    return ; 
+                }
+                setMatches(Array_Of_WEEK_Matches);
+                setSelectedByFinished(true);
+                }catch(err){
+                    console.log(err.message);
+            }
+        }
+    ,[LeagueCode]) 
+
+
+    function getMatchDay(){
+            let matchDay = -1 ; 
+            
+            for(var i = 0 ; i<response.data.matches.length ; i++){
+                if(response.data.matches[i].score.winner === null ){
+                    matchDay = response.data.matches[i].matchday;
+                    break;
+                }
+            }
+            return matchDay;
+        }
 
     useLayoutEffect(()=>{
         getTeamsMatches();
-    })
+    },[LeagueCode])
+
     
-    const getTeamsMatches=async()=>{
-        try{
 
-            const response = await axios.get("https://api.football-data.org/v4/competitions/"+LeagueCode+"/matches",
-            {
-                headers:{"X-Auth-Token":"a4b408a61fec4bb99db984a6c7b67a50" ,'Accept-Encoding': ''} 
-            })
-
-            const date = new Date();
-            var day = date.getDate();
-            var month = date.getMonth();
-            var matchDay = 0 ; 
-
-            for(var i = 0 ; i<(response.data.matches).length ; i++)
-            {
-                if(day >= getDayMatch((response.data.matches[i])) && month === getMonthMacth((response.data.matches[i]))){ 
-                    matchDay = response.data.matches[i].matchday
-                    break;
-                }
-                
-            }
-            if(matchDay === 0 ){
-                matchDay = 1 ; 
-            }
-            var new_array = (response.data.matches).filter((element)=>element.matchday === 1);
-            setMatches(new_array);
-            }catch(err){
-                console.log(err.message);
-            }
-    }
-    const getMonthMacth= ()=>{
-        var date = "2023-07-14";
-        return date.substr(5,2)
-    }
-    const getDayMatch= ()=>{
-        var date = "2023-07-14";
-        return date.substr(8,2)
-    }
     function getDate(elementDay){
         var date = elementDay.substr(0,elementDay.indexOf("T"));
         var time = (elementDay.substr(elementDay.indexOf("T")+1)) ;
@@ -79,29 +75,148 @@ export default function Matches(){
 
     }
 
+    function setMatchesByDate(date){
+        let Matches = response.data.matches; 
+        const array = [];
+        Matches.forEach(element => {
+           if(element.utcDate.substr(0,10) === date){
+            array.push(element);
+           }
+        });
+
+        if(array.length === 0 ){
+            setEmpty(true);
+            setMatches([]);
+            return;
+        }
+        setEmpty(false);
+        setMatches(array);
+    }
+
+    function setMatchesByToday(){
+        var date = new Date();
+        
+        let Matches = response.data.matches; 
+        const array = [] ; 
+        Matches.forEach((element)=>{
+            //2023-08-01
+            let year = date.getFullYear();
+            let month = date.getUTCMonth() +1 ;
+            if(parseInt(month/10) === 0 ){
+                month = "0"+month;
+            } 
+            let day = date.getUTCDate();
+            
+            const newTodayDate = year+"-"+month+"-"+day;
+            if(element.utcDate.substr(0,10) === newTodayDate){
+                array.push(element);
+            }
+        })
+
+        if(array.length === 0){
+            setEmpty(true);
+            setMatches([]);
+            return ; 
+        }
+        setEmpty(false);
+        setMatches(array);
+    }
+
+    function setMatchesByWeek(){
+        if(response === 1 ) return ;
+
+        const Array_Of_WEEK_Matches = [] ;
+        let matchDay = getMatchDay();
+
+        (response.data.matches).forEach((element)=>{
+            if(element.matchday === matchDay){
+                Array_Of_WEEK_Matches.push(element);
+            }
+        })
+
+        if(Array_Of_WEEK_Matches.length === 0 ){
+            setMatches([]);
+            setEmpty(true);
+            return ; 
+        }
+        setMatches(Array_Of_WEEK_Matches);
+        setSelectedByFinished(true);
+    }
+
+    
+
+    function setMatchesByFinished(){
+        if(response === 1 )return ; 
+        const Array_Of_Finished_Matches = [] ;
+        var matchDayToFind;
+        for(var i = 0 ; i<(response.data.matches).length ; i++)
+        {
+            
+            if( (response.data.matches[i].status) === "TIMED" ){
+                
+                matchDayToFind= (response.data.matches[i].matchday) ; 
+                break ; 
+            }
+        }
+
+        //Find the elements of the matchday of elementFound 
+        
+        (response.data.matches).forEach((element)=>{
+            if( element.matchday === matchDayToFind && element.status === "FINISHED" ){
+                Array_Of_Finished_Matches.push(element);
+            }
+        })
+
+        if(Array_Of_Finished_Matches.length === 0 ){
+            (response.data.matches).forEach((element)=>{
+                if( element.matchday === matchDayToFind-1 ){
+                    Array_Of_Finished_Matches.push(element);
+                }
+            })
+            
+        }
+         setMatches(Array_Of_Finished_Matches);
+         setSelectedByFinished(true)
+    }
+
+
+    
     return(
-        <div className="md:container h-full md:mx-auto">
-            <h1 className="font-bold text-white  w-full md:text-4xl flex py-10 px-2 underline"> Matches </h1>
-            <div className=" grid grid-cols-2 md:gap-x-5 gap-x-2 gap-y-2  ">
-            {Matches.length>0 &&
+        <div className="md:container h-auto bg-Color py-2 " >
+            <div className="flex flex-row justify-between">
+                <div>
+                <button className="rounded-full bg-white h-10 w-20 mx-1"  onClick={()=>setMatchesByToday()}>Today</button>
+                <button className="rounded-full bg-white h-10 w-20 mx-1" onClick={()=>setMatchesByFinished()}>Finished</button>
+                <button className="rounded-full bg-white h-10 w-20 mx-1"  onClick={()=>setMatchesByWeek()}>Weekly</button>
+                </div>
+
+                <input ref={refSelectedDay} type="date" className="rounded-full w-32" onChange={(event)=>setMatchesByDate(event.target.value)}/>
+            </div>
+            <div className=" grid grid-cols-1 gap-y-2  ">
+            {Matches.length>0  &&
                 Matches.map((element,index)=>{
-                   return  <div key={index} className="container bg-white  flex flex-col rounded-lg my-3 px-3 h-40 justify-center">
-                            <h1 className="text-center">{getDate(element.utcDate)}</h1>
-                            <div className="flex md:flex-row flex-col justify-between items-center md:text-3xl text-sm ">
-                                <img src={element.homeTeam.crest} className="h-6 w-6" alt="" ></img>
-                                <span className="text-lg">{element.homeTeam.shortName}</span>
-                                X
-                                <span className="text-lg">{element.awayTeam.shortName}</span>
-                                <img src={element.awayTeam.crest} className="h-6 w-6" alt=""></img>
+                   return  <div key={index} className="container bg-black flex flex-col w-5/6 rounded-lg my-3 px-3  h-18 mx-auto">
+                            <h1 className="text-center text-sm text-white">{getDate(element.utcDate)}</h1>
+                            <div className=" flex md:flex-row flex-col justify-between items-center md:text-xl text-sm  ">
+                                <img src={element.homeTeam.crest} className="h-8 w-8" alt="" ></img>
+                                <span className="text-md text-white">{element.homeTeam.shortName}</span>
+                                {!selectedByFinished &&<div className="text-white">X</div>}
+                                {selectedByFinished && <div className="text-white">{element.score.fullTime.home} - {element.score.fullTime.away}  </div>}
+                                <span className="text-md text-white">{element.awayTeam.shortName}</span>
+                                <img src={element.awayTeam.crest} className="h-8 w-8" alt=""></img>
                             </div>
                     </div>
                 })
                 
                 }
             </div>
-            {Matches.length===0 && 
-                <div className="text-center text-4xl font-bold">
+            {Matches.length===0 && !empty && 
+                <div className="text-center text-4xl font-bold " style={{height:"400px"}}>
                     Loading ...</div>
+                }
+            {empty && 
+                <div className="text-center text-4xl font-bold mt-8">
+                    No Matches Available at this Date</div>
                 }
         </div>
     )

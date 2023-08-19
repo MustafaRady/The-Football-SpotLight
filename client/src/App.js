@@ -1,9 +1,8 @@
-import { Routes ,Route } from "react-router-dom";
 import NavBar from "./components/nav";
-import Standings from "./components/standings";
-import Matches from "./components/matches";
 import News from "./components/news";
+import View from "./components/view";
 import { createContext, useReducer } from "react";
+import Title from "./images/soccer-ball.png"
 
 export const ACTIONS = {
   LALIGA: "Change to La Liga",
@@ -12,7 +11,6 @@ export const ACTIONS = {
   BUNDESLIGA: "Change to Bundesliga",
   LIGUE_1: "Change to Ligue 1",
 };
-
 
 function reducer(state, { type }) {
   switch (type) {
@@ -81,9 +79,6 @@ function reducer(state, { type }) {
   }
 }
 
-
-
-
 export const AppContext = createContext(null);
 function App() {
   const[state,dispatch]=useReducer(reducer, {
@@ -95,13 +90,26 @@ function App() {
 });
   return (
     <AppContext.Provider value={{state}}>
-      <div>
-        <NavBar dispatch={dispatch}/>
-        <Routes>
-          <Route path="/" element={<Standings />}></Route>
-          <Route path="/matches" element={<Matches />}></Route>
-          <Route path="/news" element={<News/>}></Route>
-        </Routes>
+      <div className="h-14 bg-Color text-2xl font-bold w-full flex justify-center items-center mb-2">
+        <img className="h-12 w-12 " src={Title} alt=""></img>
+        <h1 className="ml-2 text-Color ">
+          The Football SpotLight 
+        </h1>
+      </div>
+
+      <div className="flex flex-row h-full">
+        {/* News Div */}
+        <div className="w-1/4 bg-Color mr-2 rounded-xl">
+          <News/>
+        </div>
+
+        <div className="w-2/3 rounded-xl ">
+          <View/>
+        </div>
+
+        <div className="w-1/6 flex navbar">
+          <NavBar dispatch={dispatch}/> 
+        </div>
       </div>
     </AppContext.Provider>
   );

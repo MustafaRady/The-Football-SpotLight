@@ -2,15 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Signika+Negative&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
 
 body {
-    background-color: blue;
+    background-color:#161616;;
     background-repeat: no-repeat;
     background-size: cover;
   
   }
 
 *{
-    font-family: 'Signika Negative', sans-serif;
+  font-family: 'Fjalla One', sans-serif;
+}
+
+.bg-Color{
+  background-color:#353535;
+}
+.text-Color{
+  color: #08c1ff;
+}
+
+.navbar{
+  width:auto;
+  height: 54%;
+  top:0;
+}
+
+.change{
+  background-color: #08c1ff;
 }

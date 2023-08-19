@@ -1,50 +1,30 @@
-import React, { useCallback, useContext, useLayoutEffect, useState } from "react";
+import React, {useCallback, useLayoutEffect, useState } from "react";
 import axios from "axios";
-import { AppContext } from "../App";
+ function Standings({code}){
 
- function Standings(){
-    console.log("in standings...")
-    const{state} = useContext(AppContext)
-    const [LeagueCode,setLeagueCode] = useState(2014)
+    const LeagueCode = code ; 
     const [Teams,setTeams]= useState([])
-
-    const getTeamsStandings = useCallback( async()=>{
-        try{
-            const response = await axios.get("http://localhost:8000/getStandings/standings/"+LeagueCode)
-            const array = response.data.standings[0].table;
-            console.log(array);
-            setTeams(array)
-        }catch(err){
-            console.log(err.message);
+    
+    const getTeamsStandings =useCallback(
+        async ()=>{
+            try{
+                const response = await axios.get("https://api.football-data.org/v4/competitions/"+LeagueCode+"/standings" ,
+                {
+                    headers:{"X-Auth-Token":"a4b408a61fec4bb99db984a6c7b67a50"}
+                })
+                const array = response.data.standings[0].table;
+                setTeams(array)
+            }catch(err){
+                console.log(err.message);
+            }
+            
         }
-    },[LeagueCode])
-
-    useLayoutEffect(()=>{
-        switch(true){
-            case state.LaLIGA:
-                setLeagueCode(2014);
-                break
-            case state.LIGUE_1:
-                setLeagueCode(2015);
-                break;
-            case state.PREMIER_LEAGUE:
-                setLeagueCode(2021);
-                break;
-            case state.SERIE_A:
-                setLeagueCode(2019);
-                 break;
-            case state.BUNDESLIGA:
-                setLeagueCode(2002);
-                break;
-            default:return;
-
-        }
-        
-    },[state]) 
-
+    ,[LeagueCode]) 
     useLayoutEffect(()=>{
         getTeamsStandings() ;
-    },[getTeamsStandings])
+    },[LeagueCode,getTeamsStandings])
+
+    
 
 // When using useState or useReducer, 
 //changing the state triggers a re-render of the component.
@@ -57,42 +37,46 @@ import { AppContext } from "../App";
 // after the state has been updated and the component has re-rendered.
 //  This way, the LeagueCode value will be correctly set based on the latest state values.
 
-
-
-
-
+// setTimeout(()=>{
+// },2000)
 
 
     return(
-        <div className="container md:mx-auto w-full h-full mx-3 my-10 ">
-            <h1 className="font-bold text-white  w-full md:text-4xl flex md:py-10 md:px-2 underline"> Standings </h1>
+        <>
+        <div className="container bg-Color ">
             {Teams.length>0 &&
-            <table className="drop-shadow-2xl md:w-full bg-white box-shadow rounded-lg ">
-                    <tr className=" border-2 md:text-4xl font-bold  text-center">
-                        <td></td>
-                        <td></td>
-                        <td>W</td>
-                        <td>L</td>
-                        <td>D</td>
-                        <td>Pts</td>
-                    </tr>
-                    {Teams.map((element,index)=>{
-                        return <tr key={index} className="text-center border-2 h-12 md:text-2xl text-sm font-bold hover:scale-y-150 hover:scale-100 hover:duration-300 hover:bg-blue-200">
-                            <td>{element.position}</td>
-                            <td className="flex "><img className="md:mx-10 mx-2 h-10 w-10" alt="" src={element.team.crest} />{element.team.name}</td>
-                            <td>{element.won}</td>
-                            <td>{element.lost}</td>
-                            <td>{element.draw}</td>
-                            <td>{element.points}</td>
+            <div className="w-5/6 mx-auto">
+                <table className="drop-shadow-2xl md:w-full bg-white box-shadow rounded-lg ">
+                        <tr className=" border-2 md:text-xl font-bold">
+                            <td className="px-3">Rank</td>
+                            <td></td>
+                            <td className="w-10">G</td>
+                            <td className="w-10">W</td>
+                            <td className="w-10">L</td>
+                            <td className="w-10">D</td>
+                            <td className="w-10">Pts</td>
                         </tr>
-                    })}
-            </table>
+                        {Teams.map((element,index)=>{
+                            return <tr key={index} className="border-2 h-10 md:text-md text-sm font-bold">
+                                <td className="px-5">{element.position}</td>
+                                <td className="flex py-2 "><img className="md:mx-10 mx-2 h-6 w-6" alt="" src={element.team.crest} />{element.team.name}</td>
+                                <td>{element.playedGames}</td>
+                                <td>{element.won}</td>
+                                <td>{element.lost}</td>
+                                <td>{element.draw}</td>
+                                <td>{element.points}</td>
+                            </tr>
+                        })}
+                </table>
+            </div>
+            
                 }
             {Teams.length===0 && 
-                <div className="text-center text-4xl font-bold">
+                <div className="text-center text-4xl font-bold" style={{height:"400px"}}>
                     Loading ...</div>
                 }
         </div>
+        </>
     )
 }
 
