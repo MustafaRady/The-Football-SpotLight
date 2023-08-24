@@ -46,20 +46,20 @@ import axios from "axios";
         <div className="container bg-Color ">
             {Teams.length>0 &&
             <div className="w-5/6 mx-auto">
-                <table className="drop-shadow-2xl md:w-full bg-white box-shadow rounded-lg ">
-                        <tr className=" border-2 md:text-xl font-bold">
+                <table className="drop-shadow-2xl w-full bg-white box-shadow rounded-lg ">
+                        <tr className=" border-2 md:text-xl font-bold ">
                             <td className="px-3">Rank</td>
                             <td></td>
-                            <td className="w-10">G</td>
-                            <td className="w-10">W</td>
-                            <td className="w-10">L</td>
-                            <td className="w-10">D</td>
-                            <td className="w-10">Pts</td>
+                            <td className="md:w-10">G</td>
+                            <td className="md:w-10">W</td>
+                            <td className="md:w-10">L</td>
+                            <td className="md:w-10">D</td>
+                            <td className="md:w-10">Pts</td>
                         </tr>
                         {Teams.map((element,index)=>{
-                            return <tr key={index} className="border-2 h-10 md:text-md text-sm font-bold">
-                                <td className="px-5">{element.position}</td>
-                                <td className="flex py-2 "><img className="md:mx-10 mx-2 h-6 w-6" alt="" src={element.team.crest} />{element.team.name}</td>
+                            return <tr key={index} className="border-2 h-10 standings-element font-bold ">
+                                <td className="px-5 ">{element.position}</td>
+                                <td className="flex py-2 "><img className="md:mx-10 mx-2 md:h-6 md:w-6 h-4 w-4 " alt="" src={element.team.crest} />{element.team.name}</td>
                                 <td>{element.playedGames}</td>
                                 <td>{element.won}</td>
                                 <td>{element.lost}</td>
@@ -72,7 +72,7 @@ import axios from "axios";
             
                 }
             {Teams.length===0 && 
-                <div className="text-center text-4xl font-bold" style={{height:"400px"}}>
+                <div className="text-center text-4xl font-bold flex justify-center text-white" style={{height:"400px"}}>
                     Loading ...</div>
                 }
         </div>

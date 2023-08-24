@@ -5,75 +5,64 @@ import { createContext, useReducer } from "react";
 import Title from "./images/soccer-ball.png"
 
 export const ACTIONS = {
-  LALIGA: "Change to La Liga",
-  PREMIER_LEAGUE: "Change to Premier League",
-  SERIE_A: "Change to Serie A",
-  BUNDESLIGA: "Change to Bundesliga",
-  LIGUE_1: "Change to Ligue 1",
+  "Primera Division": "Change to La Liga",
+  "Premier League": "Change to Premier League",
+  "Serie A": "Change to Serie A",
+  "Bundesliga": "Change to Bundesliga",
+  "Ligue 1": "Change to Ligue 1",
 };
 
 function reducer(state, { type }) {
   switch (type) {
-    case ACTIONS.LALIGA:
+    case "Primera Division":
       return {
         ...state,
-        LaLIGA: true,
-        PREMIER_LEAGUE: false,
-        SERIE_A: false,
-        BUNDESLIGA: false,
-        LIGUE_1: false,
+        "Primera Division": true,
+        "Premier League": false,
+        "Serie A": false,
+        "Bundesliga": false,
+        "Ligue 1": false,
       };
 
-    case ACTIONS.LEAGUE1:
+    case "Ligue 1":
       return {
         ...state,
-        LaLIGA: false,
-        PREMIER_LEAGUE: false,
-        SERIE_A: false,
-        BUNDESLIGA: false,
-        LIGUE_1: false,
+        "Primera Division": false,
+        "Premier League": false,
+        "Serie A": false,
+        "Bundesliga": false,
+        "Ligue 1": true,
       };
 
-    case ACTIONS.PREMIER_LEAGUE:
+    case "Premier League":
       return {
         ...state,
-        LaLIGA: false,
-        PREMIER_LEAGUE: true,
-        SERIE_A: false,
-        BUNDESLIGA: false,
-        LIGUE_1: false,
+        "Primera Division": false,
+        "Premier League": true,
+        "Serie A": false,
+        "Bundesliga": false,
+        "Ligue 1": false,
       };
 
-    case ACTIONS.SERIE_A:
+    case "Serie A":
       return {
         ...state,
-        LaLIGA: false,
-        PREMIER_LEAGUE: false,
-        SERIE_A: true,
-        BUNDESLIGA: false,
-        LIGUE_1: false,
+        "Primera Division": false,
+        "Premier League": false,
+        "Serie A": true,
+        "Bundesliga": false,
+        "Ligue 1": false,
       };
 
-    case ACTIONS.BUNDESLIGA:
+    case "Bundesliga":
       return {
         ...state,
-        LaLIGA: false,
-        PREMIER_LEAGUE: false,
-        SERIE_A: false,
-        BUNDESLIGA: true,
-        LIGUE_1: false,
+        "Primera Division": false,
+        "Premier League": false,
+        "Serie A": false,
+        "Bundesliga": true,
+        "Ligue 1": false,
       };
-
-    case ACTIONS.LIGUE_1:
-      return {
-        ...state,
-        LaLIGA: false,
-        PREMIER_LEAGUE: false,
-        SERIE_A: false,
-        BUNDESLIGA: false,
-        LIGUE_1: true,
-      };
-
     default:
       return state;
   }
@@ -82,12 +71,14 @@ function reducer(state, { type }) {
 export const AppContext = createContext(null);
 function App() {
   const[state,dispatch]=useReducer(reducer, {
-    LaLIGA:true,
-    PREMIER_LEAGUE: false,
-    SERIE_A: false,
-    BUNDESLIGA: false,
-    LIGUE_1: true,
+    "Primera Division": true,
+    "Premier League": false,
+    "Serie A": false,
+    "Bundesliga": false,
+    "Ligue 1": false,
 });
+
+
   return (
     <AppContext.Provider value={{state}}>
       <div className="h-14 bg-Color text-2xl font-bold w-full flex justify-center items-center mb-2">
@@ -97,17 +88,18 @@ function App() {
         </h1>
       </div>
 
-      <div className="flex flex-row h-full">
+      <div className="flex flex-row h-full ">
         {/* News Div */}
-        <div className="w-1/4 bg-Color mr-2 rounded-xl">
-          <News/>
+        <div className="width-news bg-Color mr-2 rounded-xl">
+            <News/>
         </div>
-
-        <div className="w-2/3 rounded-xl ">
+        
+        
+        <div className="width-view rounded-xl ">
           <View/>
         </div>
 
-        <div className="w-1/6 flex navbar">
+        <div className="width-navbar flex navbar">
           <NavBar dispatch={dispatch}/> 
         </div>
       </div>

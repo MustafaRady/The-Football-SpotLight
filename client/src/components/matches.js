@@ -10,59 +10,63 @@ export default function Matches({code}){
     const refSelectedDay = useRef(null);
     const [selectedByFinished,setSelectedByFinished] = useState(null);
 
+    const getMatchDay = useCallback(()=>{
+        
+        let matchDay = -1 ; 
+        
+        for(var i = 0 ; i<response.data.matches.length ; i++){
+            if(response.data.matches[i].score.winner === null ){
+                matchDay = response.data.matches[i].matchday;
+                break;
+            }
+        }
+        return matchDay;
+        },[response])   
+    
+    
 
+
+    
    
-    
-    const getTeamsMatches= useCallback(
-        async()=>{
-            try{
-                
-                const response = await axios.get("https://api.football-data.org/v4/competitions/"+LeagueCode+"/matches",{
-                    headers:{"X-Auth-Token":"a4b408a61fec4bb99db984a6c7b67a50"}
-                })
-                setResponse(response);
-    
-                if(response === 1 ){
-                    console.log("Response is 1 "); 
-                    return ;
-                } 
-                const Array_Of_WEEK_Matches = [] ;
-                let matchDay = getMatchDay();
-    
-                (response.data.matches).forEach((element)=>{
-                    if(element.matchday === matchDay){
-                        Array_Of_WEEK_Matches.push(element);
-                    }
-                })
-    
-                if(Array_Of_WEEK_Matches.length === 0 ){
-                    setMatches([]);
-                    setEmpty(true);
-                    return ; 
-                }
-                setMatches(Array_Of_WEEK_Matches);
-                setSelectedByFinished(true);
-                }catch(err){
-                    console.log(err.message);
-            }
-        }
-    ,[LeagueCode]) 
-
-
-    function getMatchDay(){
-            let matchDay = -1 ; 
-            
-            for(var i = 0 ; i<response.data.matches.length ; i++){
-                if(response.data.matches[i].score.winner === null ){
-                    matchDay = response.data.matches[i].matchday;
-                    break;
-                }
-            }
-            return matchDay;
-        }
 
     useLayoutEffect(()=>{
+        console.log("Getting matches ... ")
+        const getTeamsMatches= 
+            async()=>{
+                try{
+                    
+                    const response = await axios.get("https://api.football-data.org/v4/competitions/"+LeagueCode+"/matches",{
+                        headers:{"X-Auth-Token":"a4b408a61fec4bb99db984a6c7b67a50"}
+                    })
+                    setResponse(response);
+        
+                    if(response === 1 ){
+                        console.log("Response is 1 "); 
+                        return ;
+                    } 
+                    const Array_Of_WEEK_Matches = [] ;
+                    let matchDay = getMatchDay();
+        
+                    (response.data.matches).forEach((element)=>{
+                        if(element.matchday === matchDay){
+                            Array_Of_WEEK_Matches.push(element);
+                        }
+                    })
+        
+                    if(Array_Of_WEEK_Matches.length === 0 ){
+                        setMatches([]);
+                        setEmpty(true);
+                        return ; 
+                    }
+                    setMatches(Array_Of_WEEK_Matches);
+                    setSelectedByFinished(true);
+                    }catch(err){
+                        console.log(err.message);
+                }
+            }
         getTeamsMatches();
+
+    //eslint-disable-next-line
     },[LeagueCode])
 
     
@@ -94,6 +98,7 @@ export default function Matches({code}){
     }
 
     function setMatchesByToday(){
+        if(response === 1 ) return ; 
         var date = new Date();
         
         let Matches = response.data.matches; 
@@ -120,6 +125,9 @@ export default function Matches({code}){
         }
         setEmpty(false);
         setMatches(array);
+
+        var today = document.getElementById("Today");
+        today.classList.add("change");
     }
 
     function setMatchesByWeek(){
@@ -139,6 +147,7 @@ export default function Matches({code}){
             setEmpty(true);
             return ; 
         }
+        setEmpty(false);
         setMatches(Array_Of_WEEK_Matches);
         setSelectedByFinished(true);
     }
@@ -185,25 +194,35 @@ export default function Matches({code}){
         <div className="md:container h-auto bg-Color py-2 " >
             <div className="flex flex-row justify-between">
                 <div>
-                <button className="rounded-full bg-white h-10 w-20 mx-1"  onClick={()=>setMatchesByToday()}>Today</button>
-                <button className="rounded-full bg-white h-10 w-20 mx-1" onClick={()=>setMatchesByFinished()}>Finished</button>
-                <button className="rounded-full bg-white h-10 w-20 mx-1"  onClick={()=>setMatchesByWeek()}>Weekly</button>
+                <button className="rounded-full bg-white  mx-1 button" id="Today"  onClick={()=>setMatchesByToday()}>Today</button>
+                <button className="rounded-full bg-white  mx-1 button" id="Finished" onClick={()=>setMatchesByFinished()}>Finished</button>
+                <button className="rounded-full bg-white  mx-1 button" id="Weekly" onClick={()=>setMatchesByWeek()}>Weekly</button>
                 </div>
-
-                <input ref={refSelectedDay} type="date" className="rounded-full w-32" onChange={(event)=>setMatchesByDate(event.target.value)}/>
+                <input ref={refSelectedDay} type="date" className="rounded-full input" onChange={(event)=>setMatchesByDate(event.target.value)}/>
             </div>
             <div className=" grid grid-cols-1 gap-y-2  ">
             {Matches.length>0  &&
                 Matches.map((element,index)=>{
                    return  <div key={index} className="container bg-black flex flex-col w-5/6 rounded-lg my-3 px-3  h-18 mx-auto">
                             <h1 className="text-center text-sm text-white">{getDate(element.utcDate)}</h1>
-                            <div className=" flex md:flex-row flex-col justify-between items-center md:text-xl text-sm  ">
-                                <img src={element.homeTeam.crest} className="h-8 w-8" alt="" ></img>
-                                <span className="text-md text-white">{element.homeTeam.shortName}</span>
-                                {!selectedByFinished &&<div className="text-white">X</div>}
-                                {selectedByFinished && <div className="text-white">{element.score.fullTime.home} - {element.score.fullTime.away}  </div>}
-                                <span className="text-md text-white">{element.awayTeam.shortName}</span>
-                                <img src={element.awayTeam.crest} className="h-8 w-8" alt=""></img>
+                            <div className=" flex flex-row  justify-between items-center md:text-xl text-sm  ">
+
+                                <div className="w-1/3 flex gap-x-3  justify-center items-center">
+                                    <img src={element.homeTeam.crest} className="h-8 w-8" alt="" ></img>
+                                    <span className="text-md text-white">{element.homeTeam.shortName}</span>
+                                </div>
+
+                                <div className="w-1/3 flex gap-x-3 justify-center items-center">
+                                    {!selectedByFinished &&<div className="text-white">X</div>}
+                                    {selectedByFinished && <div className="text-white">{element.score.fullTime.home} - {element.score.fullTime.away}  </div>}
+                                </div>
+
+                                <div className="w-1/3 flex gap-x-3 ustify-center items-center ">
+                                    <span className="text-md text-white">{element.awayTeam.shortName}</span>
+                                    <img src={element.awayTeam.crest} className="h-8 w-8" alt=""></img>
+                                </div>
+                                
+                                
                             </div>
                     </div>
                 })
@@ -211,11 +230,11 @@ export default function Matches({code}){
                 }
             </div>
             {Matches.length===0 && !empty && 
-                <div className="text-center text-4xl font-bold " style={{height:"400px"}}>
+                <div className="text-center text-4xl font-bold flex justify-center items-center text-white " style={{height:"500px"}}>
                     Loading ...</div>
                 }
             {empty && 
-                <div className="text-center text-4xl font-bold mt-8">
+                <div className="text-center text-4xl font-bold mt-8 flex justify-center items-center text-white" style={{height:"500px"}}>
                     No Matches Available at this Date</div>
                 }
         </div>

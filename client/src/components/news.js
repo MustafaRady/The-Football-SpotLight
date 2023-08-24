@@ -10,8 +10,11 @@ export default function News(){
                     "X-Api-Key":"b11bf6b87ba1448b801b135ee1384680"
                 }
             })
-            setNews(response.data.articles);
-            console.log(response.data.articles) /// respose.data.articles///
+            const array =[];
+            for ( let i = 0 ; i< 7 ; i++){
+                array.push(response.data.articles[i]);
+            }
+            setNews(array);
         }catch(err){
             console.log(err.message);
         }
@@ -21,10 +24,13 @@ export default function News(){
     },[]);
 
     return(
-        <div className="container m-auto grid grid-cols-1 gap-y-2 w-4/5">
+        <div className=" grid grid-cols-1 gap-y-2 w-full p-3">
+            <div className="mx-auto text-2xl text-white pt-2 text-Color text-center " >
+                    Latest News
+                </div>
             {news.length > 0 && news.map((element,index)=>{
-                return <a href={element.url}><div key={index} className="bg-white h-24 hflex flex-col justify-center items-center rounded-lg hover:bg-blue-200">
-                           <h1 className="md:text-2xl text-lg font-bold">{element.title}</h1>
+                return <a href={element.url}><div key={index} className="bg-white h-24 flex-col justify-center items-center  hover:bg-blue-200">
+                           <h1 className="md:text-xl text-lg font-bold">{element.title}</h1>
                 </div>
                 </a>
             })}
